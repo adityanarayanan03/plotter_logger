@@ -19,6 +19,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.graphWidget = pg.PlotWidget()
         self.setCentralWidget(self.graphWidget)
 
+        self.graphWidget.setBackground('#272822')
+
         #Put things that should be drawn from config in this little block
         self.colors = ['#F92672', '#66D9EF', '#A6E22E', '#FD971F']
         self.pens = [pg.mkPen(color = self.colors[i], width = 3) for i in range(len(self.colors))]
