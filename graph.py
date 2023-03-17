@@ -4,6 +4,11 @@ import pyqtgraph as pg
 import sys  # We need sys so that we can pass argv to QApplication
 import os
 
+import logging
+logging.basicConfig()
+logger = logging.getLogger("graph.py")
+logger.setLevel(logging.DEBUG)
+
 from data import plot_storage #Global variable in data.py
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -15,11 +20,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.graphWidget)
 
         #Put things that should be drawn from config in this little block
-        self.pen = pg.mkPen(color = 'r', width = 3)
+        self.colors = ['#F92672', '#66D9EF', '#A6E22E', '#FD971F']
+        self.pens = [pg.mkPen(color = self.colors[i], width = 3) for i in range(len(self.colors))]
+        self.numpens = 4
         self.wait_time = 50
 
         #Plot some dummy data once
-        self.graph_ref = self.graphWidget.plot([0], [0], pen = self.pen)
+        self.graph_ref = {0: self.graphWidget.plot([0], [0], pen = self.pens[0])}
 
         self._timer_init()
 
@@ -30,6 +37,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start()
 
     def update_plot(self):
-        #Where to draw this from... global variable in data.py!
-        new_x, new_y = plot_storage.get_line()
-        self.graph_ref.setData(new_x, new_y, pen = self.pen)
+        for line in range(plot_storage.get_num_lines()):
+            new_x, new_y = plot_storage.get_line(line)
+            if line in self.graph_ref.keys():
+                self.graph_ref[line].setData(new_x, new_y, pen=self.pens[line%self.numpens])
+            else:
+                logger.debug("adding a new line to the plot")
+                self.graph_ref[line] = self.graphWidget.plot(new_x, new_y, pen=self.pens[line%self.numpens])

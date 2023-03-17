@@ -15,13 +15,19 @@ logger.setLevel(logging.DEBUG)
 from data import plot_storage
 
 def dummy_update():
+    motor = plot_storage.add_line()
+    motor_smaller_noise = plot_storage.add_line()
+
     while(1):
 
         if(plot_storage.kill_update_thread):
             logger.debug("Received kill.")
             break
 
-        plot_storage.add_point(time.time(), np.random.normal(10, 1))
+        curTime = time.time()
+        plot_storage.add_point(curTime, np.sin(curTime) + np.random.normal(0, 0.1))
+        plot_storage.add_point(curTime, np.sin(curTime), motor)
+        plot_storage.add_point(curTime, np.sin(curTime) + np.random.normal(0, 0.05), motor_smaller_noise)
 
         time.sleep(np.abs(np.random.normal(0.02, 0.01)))
 

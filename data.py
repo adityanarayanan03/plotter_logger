@@ -129,6 +129,10 @@ class DataStorage:
         #add a prehistory for the new line
         self.prehistory[self.next_line] = {'x': [None]*self.prehistory_buffer_size, 'y': [None]*self.prehistory_buffer_size}
 
+        #add a line to num_points
+        self.num_points[self.next_line] = 0
+        self.prehistory_current_size[self.next_line] = 0
+
         to_return = self.next_line
 
         self.next_line += 1
@@ -140,6 +144,9 @@ class DataStorage:
         line = self._assert_line_exists(line)
 
         return self.x_points[line], self.y_points[line]
+    
+    def get_num_lines(self):
+        return self.next_line
 
     def get_num_points(self, line=0):
 
