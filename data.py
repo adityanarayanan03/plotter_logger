@@ -22,11 +22,14 @@ class DataStorage:
         #Put stuff that should be drawn from config below this line
         self.windowSize = 200
         self.prehistory_buffer_size = 1000
-        self.prehistory_current_size = 0
+        self.prehistory_current_size = {0:0}
         self.prehistory_temp_name = f"temp_{int(time.time())}"
 
         #Set up prehistory buffer
         self.prehistory = {0: {'x': [None]*self.prehistory_buffer_size, 'y': [None]*self.prehistory_buffer_size}}
+
+        #Why is this even neessary man
+        self.kill_update_thread = False
 
     def _assert_line_exists(self, line):
         '''
@@ -80,30 +83,38 @@ class DataStorage:
         Calls _save_prehistory_buffer when buffer is full
         '''
 
-        if (self.prehistory_current_size == self.prehistory_buffer_size):
+        if (self.prehistory_current_size[line] == self.prehistory_buffer_size):
             logger.debug("Reached prehistory buffer limit. Saving prehistory.")
             self._save_prehistory_buffer(line)
-            self.prehistory_current_size = 0
+            self.prehistory_current_size[line] = 0
             return
         
-        self.prehistory[line]['x'][self.prehistory_current_size] = x
-        self.prehistory[line]['y'][self.prehistory_current_size] = y
-        self.prehistory_current_size += 1
+        self.prehistory[line]['x'][self.prehistory_current_size[line]] = x
+        self.prehistory[line]['y'][self.prehistory_current_size[line]] = y
+        self.prehistory_current_size[line] += 1
     
     def _save_prehistory_buffer(self, line):
         iterator = zip(self.prehistory[line]['x'], self.prehistory[line]['y'])
 
-        with open(self.prehistory_temp_name + f"line_{line}", "a", newline = "") as prehistory_csv:
+        with open(self.prehistory_temp_name + f"_line_{line}", "a", newline = "") as prehistory_csv:
             prehistory_out = csv.writer(prehistory_csv, delimiter=",")
             i=0
             for row in iterator:
-                if(i<= self.prehistory_current_size):
+                if(i<= self.prehistory_current_size[line]):
                     prehistory_out.writerow(row)
                     i += 1
                 else:
                     break
         
         logger.debug("Successfully saved to prehistory file.")
+    
+    def _save_history(self, line):
+        iterator = zip(self.x_points[line], self.y_points[line])
+
+        with open(self.prehistory_temp_name + f"_line_{line}", "a", newline="") as csvfile:
+            history_out = csv.writer(csvfile, delimiter=",")
+            for row in iterator:
+                history_out.writerow(row)
 
 
     def add_line(self):
@@ -114,6 +125,9 @@ class DataStorage:
 
         self.x_points[self.next_line] = []
         self.y_points[self.next_line] = []
+
+        #add a prehistory for the new line
+        self.prehistory[self.next_line] = {'x': [None]*self.prehistory_buffer_size, 'y': [None]*self.prehistory_buffer_size}
 
         to_return = self.next_line
 
@@ -133,6 +147,20 @@ class DataStorage:
 
         return self.num_points[line]
 
+    def cleanup(self):
+        '''
+        Saves the prehistory and current history
+        '''
+        self.logger.debug("Running cleanup routine on graph exit")
+        for line in range(self.next_line):
+            #save anything remaining in the prehistory buffer
+            self._save_prehistory_buffer(line)
+
+            #save the history buffer
+            self._save_history(line)
+        
+        logger.debug("Setting kill to true in cleaup")
+        self.kill_update_thread = True
     
     def __str__(self):
         '''string method, called on cast to string'''
