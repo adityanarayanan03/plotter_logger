@@ -1,3 +1,6 @@
+import time
+import csv
+
 import logging
 logging.basicConfig()
 logger = logging.getLogger("data.py")
@@ -18,6 +21,12 @@ class DataStorage:
 
         #Put stuff that should be drawn from config below this line
         self.windowSize = 200
+        self.prehistory_buffer_size = 1000
+        self.prehistory_current_size = 0
+        self.prehistory_temp_name = f"temp_{int(time.time())}"
+
+        #Set up prehistory buffer
+        self.prehistory = {0: {'x': [None]*self.prehistory_buffer_size, 'y': [None]*self.prehistory_buffer_size}}
 
     def _assert_line_exists(self, line):
         '''
@@ -54,10 +63,48 @@ class DataStorage:
         '''
         line = self._assert_line_exists(line)
 
+        x_removed = self.x_points[line][0]
+        y_removed = self.y_points[line][0]
+
         self.x_points[line] = self.x_points[line][1:]
         self.y_points[line] = self.y_points[line][1:]
 
         self.num_points[line] -= 1
+
+        #Write to prehistory
+        self._write_to_prehistory(x_removed, y_removed, line)
+    
+    def _write_to_prehistory(self, x, y, line):
+        '''
+        Writes a datapoint to the prehistory buffer. 
+        Calls _save_prehistory_buffer when buffer is full
+        '''
+
+        if (self.prehistory_current_size == self.prehistory_buffer_size):
+            logger.debug("Reached prehistory buffer limit. Saving prehistory.")
+            self._save_prehistory_buffer(line)
+            self.prehistory_current_size = 0
+            return
+        
+        self.prehistory[line]['x'][self.prehistory_current_size] = x
+        self.prehistory[line]['y'][self.prehistory_current_size] = y
+        self.prehistory_current_size += 1
+    
+    def _save_prehistory_buffer(self, line):
+        iterator = zip(self.prehistory[line]['x'], self.prehistory[line]['y'])
+
+        with open(self.prehistory_temp_name + f"line_{line}", "a", newline = "") as prehistory_csv:
+            prehistory_out = csv.writer(prehistory_csv, delimiter=",")
+            i=0
+            for row in iterator:
+                if(i<= self.prehistory_current_size):
+                    prehistory_out.writerow(row)
+                    i += 1
+                else:
+                    break
+        
+        logger.debug("Successfully saved to prehistory file.")
+
 
     def add_line(self):
         '''
