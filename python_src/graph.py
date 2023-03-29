@@ -25,7 +25,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.colors = ['#F92672', '#66D9EF', '#A6E22E', '#FD971F']
         self.pens = [pg.mkPen(color = self.colors[i], width = 3) for i in range(len(self.colors))]
         self.numpens = 4
-        self.wait_time = 50
+        self.wait_time = 5
 
         #Plot some dummy data once
         self.graph_ref = {0: self.graphWidget.plot([0], [0], pen = self.pens[0])}

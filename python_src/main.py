@@ -29,7 +29,7 @@ def dummy_update():
         plot_storage.add_point(curTime, np.sin(curTime), motor)
         plot_storage.add_point(curTime, np.sin(curTime) + np.random.normal(0, 0.05), motor_smaller_noise)
 
-        time.sleep(np.abs(np.random.normal(0.02, 0.01)))
+        time.sleep(np.abs(np.random.normal(0.005, 0.001)))
 
 def graph_main():
 
