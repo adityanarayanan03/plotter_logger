@@ -10,6 +10,7 @@ class Plotter{
         int add_line();
         void send_point(int x, int y, int line_d);
         void send_buffer(int* x, int* y, int line_d, int num);
+        void send_buffer_compact(int* x, int* y, int line_d, int num);
         
     private:
         int next_line_d;
