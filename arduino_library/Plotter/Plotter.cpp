@@ -5,9 +5,9 @@ Plotter::Plotter(){
     //Constructor, just needs to init next_line_d
 }
 
-void Plotter::begin(){
+void Plotter::begin(int baud_rate){
     next_line_d = 0;
-    Serial.begin(9600);
+    Serial.begin(baud_rate);
 }
 
 int Plotter::add_line(){
@@ -17,7 +17,7 @@ int Plotter::add_line(){
     return next_line_d++;
 }
 
-void Plotter::add_point(int x, int y, int line_d){
+void Plotter::send_point(int x, int y, int line_d){
     //Have to do the actual serial send here
     Serial.print("PLOTTER:add_point,");
     Serial.print(x);
@@ -26,4 +26,10 @@ void Plotter::add_point(int x, int y, int line_d){
     Serial.print(",");
     Serial.print(line_d);
     Serial.print("\n");
+}
+
+void Plotter::send_buffer(int* x, int* y, int line_d, int num){
+    for(int i=0; i<num; i++){
+        send_point(x[i], y[i], line_d);
+    }
 }
