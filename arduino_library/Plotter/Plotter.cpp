@@ -35,16 +35,20 @@ void Plotter::send_buffer(int* x, int* y, int line_d, int num){
 }
 
 void Plotter::send_buffer_compact(int* x, int* y, int line_d, int num){
-    String to_return = "PLOTTER:add_points/[";
+    String to_return = "PLOTTER:add_points:";
     for(int i=0; i<num; i++){
         to_return += String(x[i]);
-        to_return += ",";
+        if(i != num-1){
+            to_return += ",";
+        }
     }
-    to_return += "]/[";
+    to_return += ":";
     for(int i=0; i<num; i++){
         to_return += String(y[i]);
-        to_return += ",";
+        if(i != num-1){
+            to_return += ",";
+        }
     }
-    to_return += "]\n";
+    to_return += "\n";
     Serial.print(to_return);
 }

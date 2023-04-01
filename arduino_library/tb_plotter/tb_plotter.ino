@@ -1,6 +1,6 @@
 #include <Plotter.h>
 
-#define BUFFER_SIZE 20
+#define BUFFER_SIZE 50
 
 Plotter plotter;
 int a;
@@ -20,5 +20,5 @@ void loop(){
         buffer_y[i] = i;
     }
     plotter.send_buffer_compact(buffer_x, buffer_y, 0, BUFFER_SIZE);
-    delay(100);
+    //delay(100);
 }
