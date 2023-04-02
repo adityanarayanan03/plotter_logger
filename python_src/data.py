@@ -57,6 +57,26 @@ class DataStorage:
 
         if (self.get_num_points(line) > self.windowSize):
             self._remove_first_point(line)
+    
+    def add_points(self, x_arr, y_arr, line):
+        '''
+        Adds a whole x buffer and y buffer to the line.
+        Going to start without locking, but we might have 
+        to lock this later.
+        '''
+        if(len(x_arr) != len(y_arr)):
+            logger.error(f"Length mismatch in add_points, x_arr was len {len(x_arr)} and y_arr was len {len(y_arr)}")
+
+        line = self._assert_line_exists(line)
+
+        self.x_points[line] += x_arr
+        self.y_points[line] += y_arr
+
+        self.num_points[line] += len(x_arr)
+
+        if (self.get_num_points(line) > self.windowSize):
+            self._remove_first_n_points(line, n)
+
 
 
     def _remove_first_point(self, line=0):
@@ -76,6 +96,29 @@ class DataStorage:
 
         #Write to prehistory
         self._write_to_prehistory(x_removed, y_removed, line)
+    
+    def _remove_first_n_points(self, line, n):
+        '''
+        Removes the oldest n points from the history of 
+        a specific line
+
+        _remove_first_point is now just a special case 
+        of _remove_first_n_points
+        '''
+        line = self._assert_line_exists(line)
+
+        x_removed = self.x_points[line][0:n]
+        y_removed = self.y_points[line][0:n]
+
+        self.x_points[line] = self.x_points[line][n:]
+        self.y_points[line] = self.y_points[line][n:]
+
+        self.num_points[line] -= n
+
+        #Write to prehistory
+        for i in range(len(x_removed)):
+            self._write_to_prehistory(x_removed[i], y_removed[i], line)
+
     
     def _write_to_prehistory(self, x, y, line):
         '''
@@ -201,6 +244,6 @@ if __name__ == "__main__":
 else:
     global plot_storage
 
-    logger.debug("data.py was imported. Creating global variable plot_storage here.")
+    logger.debug("data.py was imported. Creating global variable plot_storage in data.py")
 
     plot_storage = DataStorage()
