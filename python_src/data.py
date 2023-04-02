@@ -6,6 +6,8 @@ logging.basicConfig()
 logger = logging.getLogger("data.py")
 logger.setLevel(logging.DEBUG)
 
+from threading import Lock
+
 global plot_storage
 
 class DataStorage:
@@ -31,6 +33,9 @@ class DataStorage:
         #Why is this even neessary man
         self.kill_update_thread = False
 
+        #synch
+        self.lock = Lock()
+
     def _assert_line_exists(self, line):
         '''
         Makes sure the line exists, if it doesn't 
@@ -49,6 +54,8 @@ class DataStorage:
         '''
 
         line = self._assert_line_exists(line)
+
+        self.lock.acquire(blocking=True)
     
         self.x_points[line].append(x)
         self.y_points[line].append(y)
@@ -57,6 +64,8 @@ class DataStorage:
 
         if (self.get_num_points(line) > self.windowSize):
             self._remove_first_point(line)
+        
+        self.lock.release()
     
     def add_points(self, x_arr, y_arr, line):
         '''
@@ -69,6 +78,8 @@ class DataStorage:
 
         line = self._assert_line_exists(line)
 
+        self.lock.acquire(blocking=True)
+
         self.x_points[line] += x_arr
         self.y_points[line] += y_arr
 
@@ -78,6 +89,8 @@ class DataStorage:
             n = self.get_num_points(line) - self.windowSize
             #logger.debug(f"in add_points, computed n is {n}")
             self._remove_first_n_points(line, n)
+        
+        self.lock.release()
 
 
 
@@ -188,9 +201,15 @@ class DataStorage:
     
     def get_line(self, line=0):
 
+        self.lock.acquire(blocking = True)
+
         line = self._assert_line_exists(line)
 
-        return self.x_points[line], self.y_points[line]
+        a, b = self.x_points[line], self.y_points[line]
+
+        self.lock.release()
+
+        return a,b
     
     def get_num_lines(self):
         return self.next_line
