@@ -44,12 +44,12 @@ def screen_to_terminal():
                     #should dispatch to a add_points handler
                     logger.debug(f"{time.time()} -> {string_line}")
 
-def screen_to_data_storage():
+def screen_to_data_storage(port_name):
 
     #Keyed on incoming descriptor, Value is plot_storage descriptor
     line_d_mapping = dict()
 
-    ser = serial.Serial(sys.argv[1], 19200)
+    ser = serial.Serial(port_name, 19200)
 
     #Waits for the begin command
     while 1:
@@ -86,8 +86,8 @@ def screen_to_data_storage():
                     y_buffer = eval(string_line[4])
 
                     #logger.debug(storage_line_d)
-                    #logger.debug(x_buffer)
-                    #logger.debug(y_buffer)
+                    logger.debug(x_buffer)
+                    logger.debug(y_buffer)
 
                     plot_storage.add_points(x_buffer, y_buffer, storage_line_d)
 
@@ -95,4 +95,5 @@ def screen_to_data_storage():
 
 if __name__ == "__main__":
     #screen_to_terminal()
+    logger.info("Serial Parser was run directly. Screening to (unused) data storage object.")
     screen_to_data_storage()

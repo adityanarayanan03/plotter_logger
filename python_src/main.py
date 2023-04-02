@@ -14,6 +14,8 @@ logger.setLevel(logging.DEBUG)
 
 from data import plot_storage
 
+from serial_parser import screen_to_data_storage
+
 def dummy_update():
     motor = plot_storage.add_line()
     motor_smaller_noise = plot_storage.add_line()
@@ -43,8 +45,12 @@ def graph_main():
 
 
 if __name__ == "__main__":
-    update_thread = threading.Thread(target = dummy_update)
+    #update_thread = threading.Thread(target = dummy_update)
+    #update_thread.start()
 
-    update_thread.start()
+    print(sys.argv[1])
+
+    serial_thread = threading.Thread(target = screen_to_data_storage, args=[str(sys.argv[1])])
+    serial_thread.start()
 
     graph_main()
