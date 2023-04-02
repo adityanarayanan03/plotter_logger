@@ -22,7 +22,7 @@ class DataStorage:
         self.num_points = {0: 0}
 
         #Put stuff that should be drawn from config below this line
-        self.windowSize = 200
+        self.windowSize = 1000
         self.prehistory_buffer_size = 1000
         self.prehistory_current_size = {0:0}
         self.prehistory_temp_name = f"temp_{int(time.time())}"
