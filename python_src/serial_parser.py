@@ -66,6 +66,11 @@ def screen_to_data_storage(port_name):
 
         restart = False
         while (not restart):
+
+            if(plot_storage.kill_update_thread):
+                logger.debug("Received kill.")
+                sys.exit(0)
+
             try:
                 string_line = ser.readline().decode().strip("\n").split(":")
             except UnicodeDecodeError:
