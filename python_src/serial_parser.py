@@ -51,8 +51,9 @@ def screen_to_data_storage(port_name):
 
     ser = serial.Serial(port_name, 19200)
 
-    #Waits for the begin command
     while 1:
+
+        #Waits for the begin command
         begin = False
         while (not begin):
             try:
@@ -64,6 +65,7 @@ def screen_to_data_storage(port_name):
                 if (string_line[1] == "begin"):
                     begin = True
 
+        #Goes until reset or exit
         restart = False
         while (not restart):
 
@@ -73,6 +75,7 @@ def screen_to_data_storage(port_name):
 
             try:
                 string_line = ser.readline().decode().strip("\n").split(":")
+                #logger.debug(string_line)
             except UnicodeDecodeError:
                 #Have to go back and wait for begin signal again
                 restart = True
@@ -91,12 +94,12 @@ def screen_to_data_storage(port_name):
                     y_buffer = eval(string_line[4])
 
                     #logger.debug(storage_line_d)
-                    logger.debug(x_buffer)
-                    logger.debug(y_buffer)
+                    #logger.debug(x_buffer)
+                    #logger.debug(y_buffer)
 
                     plot_storage.add_points(x_buffer, y_buffer, storage_line_d)
 
-                    logger.debug(f"Recv buffer at {time.time()}")
+                    #logger.debug(f"Recv buffer at {time.time()}")
 
 if __name__ == "__main__":
     #screen_to_terminal()
