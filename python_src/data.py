@@ -75,6 +75,8 @@ class DataStorage:
         self.num_points[line] += len(x_arr)
 
         if (self.get_num_points(line) > self.windowSize):
+            n = self.get_num_points(line) - self.windowSize
+            #logger.debug(f"in add_points, computed n is {n}")
             self._remove_first_n_points(line, n)
 
 
@@ -135,6 +137,8 @@ class DataStorage:
         self.prehistory[line]['x'][self.prehistory_current_size[line]] = x
         self.prehistory[line]['y'][self.prehistory_current_size[line]] = y
         self.prehistory_current_size[line] += 1
+
+        #logger.debug(f"Prehistory buffer size is {self.prehistory_current_size[line]}")
     
     def _save_prehistory_buffer(self, line):
         iterator = zip(self.prehistory[line]['x'], self.prehistory[line]['y'])

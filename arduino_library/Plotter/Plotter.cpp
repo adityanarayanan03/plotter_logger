@@ -13,7 +13,7 @@ void Plotter::begin(int baud_rate){
 
 int Plotter::add_line(){
     //Have to send some shit here
-    Serial.print("PLOTTER:add_line\n");
+    Serial.print("PLOTTER:add_line:" + String(next_line_d)+ "\n");
 
     return next_line_d++;
 }
@@ -36,20 +36,20 @@ void Plotter::send_buffer(int* x, int* y, int line_d, int num){
 }
 
 void Plotter::send_buffer_compact(int* x, int* y, int line_d, int num){
-    String to_return = "PLOTTER:add_points:" + String(line_d) + ":";
+    String to_return = "PLOTTER:add_points:" + String(line_d) + ":[";
     for(int i=0; i<num; i++){
         to_return += String(x[i]);
         if(i != num-1){
             to_return += ",";
         }
     }
-    to_return += ":";
+    to_return += "]:[";
     for(int i=0; i<num; i++){
         to_return += String(y[i]);
         if(i != num-1){
             to_return += ",";
         }
     }
-    to_return += "\n";
+    to_return += "]\n";
     Serial.print(to_return);
 }
