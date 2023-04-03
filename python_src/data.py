@@ -16,19 +16,19 @@ class DataStorage:
         self.logger = logging.getLogger("DataStorage")
         self.logger.setLevel(logging.DEBUG)
 
-        self.x_points = {0: []}
-        self.y_points = {0: []}
-        self.next_line = 1
-        self.num_points = {0: 0}
+        self.x_points = dict()#{0: []}
+        self.y_points = dict()#{0: []}
+        self.next_line = 0#1
+        self.num_points = dict()#{0: 0}
 
         #Put stuff that should be drawn from config below this line
         self.windowSize = 1000
         self.prehistory_buffer_size = 1000
-        self.prehistory_current_size = {0:0}
+        self.prehistory_current_size = dict()#{0:0}
         self.prehistory_temp_name = f"temp_{int(time.time())}"
 
         #Set up prehistory buffer
-        self.prehistory = {0: {'x': [None]*self.prehistory_buffer_size, 'y': [None]*self.prehistory_buffer_size}}
+        self.prehistory = dict()#{0: {'x': [None]*self.prehistory_buffer_size, 'y': [None]*self.prehistory_buffer_size}}
 
         #Why is this even neessary man
         self.kill_update_thread = False
