@@ -20,6 +20,7 @@ class DataStorage:
         self.y_points = dict()#{0: []}
         self.next_line = 0#1
         self.num_points = dict()#{0: 0}
+        self.fp_digits = dict()
 
         #Put stuff that should be drawn from config below this line
         self.windowSize = 1000
@@ -55,6 +56,10 @@ class DataStorage:
 
         line = self._assert_line_exists(line)
 
+        #Modify inputs x and y to account for (possible) fixed-point parameter
+        x = x/(10**(self.fp_digits[line]['x']))
+        y = y/(10**(self.fp_digits[line]['y']))
+
         self.lock.acquire(blocking=True)
     
         self.x_points[line].append(x)
@@ -77,6 +82,10 @@ class DataStorage:
             logger.error(f"Length mismatch in add_points, x_arr was len {len(x_arr)} and y_arr was len {len(y_arr)}")
 
         line = self._assert_line_exists(line)
+
+        #fix x_arr and y_arr to take fp logic into account
+        x_arr = [x/(10**(self.fp_digits[line]['x'])) for x in x_arr]
+        y_arr = [y/(10**(self.fp_digits[line]['y'])) for y in y_arr]
 
         self.lock.acquire(blocking=True)
 
@@ -177,7 +186,7 @@ class DataStorage:
                 history_out.writerow(row)
 
 
-    def add_line(self):
+    def add_line(self, x_fp_digits = 0, y_fp_digits = 0):
         '''
         Adds a line to the plot and returns a handle (integer)
         to refer to it by in the future
@@ -185,6 +194,8 @@ class DataStorage:
 
         self.x_points[self.next_line] = []
         self.y_points[self.next_line] = []
+
+        self.fp_digits[self.next_line] = {'x': x_fp_digits, 'y': y_fp_digits}
 
         #add a prehistory for the new line
         self.prehistory[self.next_line] = {'x': [None]*self.prehistory_buffer_size, 'y': [None]*self.prehistory_buffer_size}

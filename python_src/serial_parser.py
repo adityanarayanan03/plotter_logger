@@ -83,8 +83,13 @@ def screen_to_data_storage(port_name):
 
             if(string_line[0] == "PLOTTER"):
                 if (string_line[1] == "add_line"):
+                    #Unpack the rest of the commands
                     incoming_descriptor = int(string_line[2])
-                    line_d_mapping[incoming_descriptor] = plot_storage.add_line()
+                    x_fp_digits = int(string_line[3])
+                    y_fp_digits = int(string_line[4])
+
+                    line_d_mapping[incoming_descriptor] = plot_storage.add_line(x_fp_digits, y_fp_digits)
+
                     logger.debug(f"Added line to mapping. {line_d_mapping}")
 
                 elif(string_line[1] == "add_points"):

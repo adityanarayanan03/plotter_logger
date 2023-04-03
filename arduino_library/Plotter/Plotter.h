@@ -12,6 +12,7 @@ class Plotter{
 
         //Adding a new buffer
         uint8_t add_line(int32_t* x_buf, int32_t* y_buf, uint8_t buf_size);
+        uint8_t add_line(int32_t* x_buf, int32_t* y_buf, uint8_t buf_size, uint8_t x_fp_digits, uint8_t y_fp_digits);
 
         //Managing buffers
         bool push_to_buffer(uint8_t line_d, int32_t x, int32_t y);

@@ -13,7 +13,7 @@ int32_t pot_val;
 void setup(){
     plotter.begin(115200);
 
-    line_1 = plotter.add_line(buffer_x, buffer_y, BUFFER_SIZE);
+    line_1 = plotter.add_line(buffer_x, buffer_y, BUFFER_SIZE, 3, 0);
 }
 
 void loop(){

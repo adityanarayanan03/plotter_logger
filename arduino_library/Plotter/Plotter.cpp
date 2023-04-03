@@ -16,7 +16,29 @@ uint8_t Plotter::add_line(int32_t* x_buf, int32_t* y_buf, uint8_t buf_size){
         return -1;
     }
 
-    Serial.print("PLOTTER:add_line:" + String(next_line_d) + "\n");
+    Serial.print("PLOTTER:add_line:" + String(next_line_d) + ":0:0\n");
+
+    //Setup all the buffer tracking stuff
+    x_bufs[next_line_d] = x_buf;
+    y_bufs[next_line_d] = y_buf;
+    buf_sizes[next_line_d] = buf_size;
+    idx_ptr[next_line_d] = 0;
+
+    //Increment after return
+    return next_line_d++;
+}
+
+/*
+Overloaded version of add_line that passes along non-zero fixed point digits.
+
+Receiver side of the plotter will take care of the fixed-point conversion.
+*/
+uint8_t Plotter::add_line(int32_t* x_buf, int32_t* y_buf, uint8_t buf_size, uint8_t x_fp_digits, uint8_t y_fp_digits){
+    if (next_line_d >= MAX_LINES){
+        return -1;
+    }
+
+    Serial.print("PLOTTER:add_line:" + String(next_line_d) + ":" + String(x_fp_digits) + ":" + String(y_fp_digits) + "\n");
 
     //Setup all the buffer tracking stuff
     x_bufs[next_line_d] = x_buf;
