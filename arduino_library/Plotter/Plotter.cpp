@@ -11,7 +11,7 @@ void Plotter::begin(uint32_t baud_rate){
     Serial.print("\nPLOTTER:begin\n");
 }
 
-int Plotter::add_line(int* x_buf, int* y_buf, int buf_size){
+uint8_t Plotter::add_line(int32_t* x_buf, int32_t* y_buf, uint8_t buf_size){
     if (next_line_d >= MAX_LINES){
         return -1;
     }
@@ -28,8 +28,8 @@ int Plotter::add_line(int* x_buf, int* y_buf, int buf_size){
     return next_line_d++;
 }
 
-bool Plotter::push_to_buffer(int line_d, int x, int y){
-    int idx = idx_ptr[line_d];
+bool Plotter::push_to_buffer(uint8_t line_d, int32_t x, int32_t y){
+    uint8_t idx = idx_ptr[line_d];
 
     x_bufs[line_d][idx] = x;
     y_bufs[line_d][idx] = y;
@@ -42,15 +42,15 @@ bool Plotter::push_to_buffer(int line_d, int x, int y){
     return false;
 }
 
-void Plotter::send_buffer(int line_d){
-    int* x_ptr = x_bufs[line_d];
-    int* y_ptr = y_bufs[line_d];
-    int num = buf_sizes[line_d];
+void Plotter::send_buffer(uint8_t line_d){
+    int32_t* x_ptr = x_bufs[line_d];
+    int32_t* y_ptr = y_bufs[line_d];
+    uint8_t num = buf_sizes[line_d];
 
     send_buffer_compact(x_ptr, y_ptr, line_d, num);
 }
 
-void Plotter::send_point(int x, int y, int line_d){
+void Plotter::send_point(int32_t x, int32_t y, uint8_t line_d){
     //Have to do the actual serial send here
     Serial.print("PLOTTER:add_point,");
     Serial.print(x);
@@ -61,7 +61,7 @@ void Plotter::send_point(int x, int y, int line_d){
     Serial.print("\n");
 }
 
-void Plotter::send_buffer_compact(int* x, int* y, int line_d, int num){
+void Plotter::send_buffer_compact(int32_t* x, int32_t* y, uint8_t line_d, uint8_t num){
     String to_return = "PLOTTER:add_points:" + String(line_d) + ":[";
     for(int i=0; i<num; i++){
         to_return += String(x[i]);
