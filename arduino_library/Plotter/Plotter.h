@@ -8,7 +8,7 @@
 class Plotter{
     public:
         Plotter();
-        void begin(int baud_rate);
+        void begin(uint32_t baud_rate);
 
         //Adding a new buffer
         int add_line(int* x_buf, int* y_buf, int buf_size);

@@ -5,7 +5,7 @@ Plotter::Plotter(){
     //Constructor, just needs to init next_line_d
 }
 
-void Plotter::begin(int baud_rate){
+void Plotter::begin(uint32_t baud_rate){
     next_line_d = 0;
     Serial.begin(baud_rate);
     Serial.print("\nPLOTTER:begin\n");

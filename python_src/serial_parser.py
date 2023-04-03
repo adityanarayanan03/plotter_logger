@@ -49,7 +49,7 @@ def screen_to_data_storage(port_name):
     #Keyed on incoming descriptor, Value is plot_storage descriptor
     line_d_mapping = dict()
 
-    ser = serial.Serial(port_name, 19200)
+    ser = serial.Serial(port_name, 115200)
 
     while 1:
 
@@ -99,7 +99,7 @@ def screen_to_data_storage(port_name):
 
                     plot_storage.add_points(x_buffer, y_buffer, storage_line_d)
 
-                    #logger.debug(f"Recv buffer at {time.time()}")
+                    logger.debug(f"Recv buffer at {time.time()}")
 
 if __name__ == "__main__":
     #screen_to_terminal()
