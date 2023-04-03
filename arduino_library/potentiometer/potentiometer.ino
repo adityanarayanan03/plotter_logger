@@ -11,7 +11,7 @@ int32_t buffer_y[BUFFER_SIZE];
 int32_t pot_val;
 
 void setup(){
-    plotter.begin(115200);
+    plotter.begin(115200, 0, 1024);
 
     line_1 = plotter.add_line(buffer_x, buffer_y, BUFFER_SIZE, 3, 0);
 }

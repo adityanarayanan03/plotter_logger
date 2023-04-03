@@ -8,7 +8,20 @@ Plotter::Plotter(){
 void Plotter::begin(uint32_t baud_rate){
     next_line_d = 0;
     Serial.begin(baud_rate);
-    Serial.print("\nPLOTTER:begin\n");
+    Serial.print("\nPLOTTER:begin:None:None\n");
+}
+
+/*
+Overloaded version of begin that takes window sizes into
+account
+*/
+void Plotter::begin(uint32_t baud_rate, int32_t window_min, int32_t window_max){
+    next_line_d = 0;
+    Serial.begin(baud_rate);
+
+    String to_print = "\nPLOTTER:begin:" + String(window_min) + ":" + String(window_max) + "\n";
+
+    Serial.print(to_print);
 }
 
 uint8_t Plotter::add_line(int32_t* x_buf, int32_t* y_buf, uint8_t buf_size){

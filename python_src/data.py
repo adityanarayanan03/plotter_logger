@@ -28,6 +28,10 @@ class DataStorage:
         self.prehistory_current_size = dict()#{0:0}
         self.prehistory_temp_name = f"temp_{int(time.time())}"
 
+        #Set up some window data that the grapher will read from here
+        self.window_min = 0
+        self.window_max = 0
+
         #Set up prehistory buffer
         self.prehistory = dict()#{0: {'x': [None]*self.prehistory_buffer_size, 'y': [None]*self.prehistory_buffer_size}}
 
@@ -230,6 +234,11 @@ class DataStorage:
         line = self._assert_line_exists(line)
 
         return self.num_points[line]
+    
+    def set_window_min_max(self, window_min, window_max):
+        self.window_min = window_min
+        self.window_max = window_max
+
 
     def cleanup(self):
         '''

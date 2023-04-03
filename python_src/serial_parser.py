@@ -63,6 +63,15 @@ def screen_to_data_storage(port_name):
             
             if(string_line[0] == "PLOTTER"):
                 if (string_line[1] == "begin"):
+                    window_min = eval(string_line[2])
+                    window_max = eval(string_line[3])
+
+                    logger.debug(f"Set window min to {window_min}, and window_max to {window_max}")
+
+                    if (window_min or window_max):
+                        #Call some function that sets the window size
+                        plot_storage.set_window_min_max(window_min, window_max)
+
                     begin = True
 
         #Goes until reset or exit

@@ -46,3 +46,5 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 logger.debug("adding a new line to the plot")
                 self.graph_ref[line] = self.graphWidget.plot(new_x, new_y, pen=self.pens[line%self.numpens])
+            
+            self.graphWidget.setYRange(plot_storage.window_min, plot_storage.window_max, padding=0.1)
